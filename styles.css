@@ -1,0 +1,741 @@
+/* --- 1. VARIABLES & GLOBAL STYLES --- */
+:root {
+    --maroon-primary: #800000;
+    --maroon-dark: #5C0000;
+    --maroon-light: #A52A2A;
+    --maroon-bg: #FFF5F5;
+    --gold-accent: #D4AF37;
+    --light-gold: #F0E68C;
+    --rose-pink: #FFB6C1;
+    --font-elegant: 'Great Vibes', cursive;
+    --font-body: 'Montserrat', sans-serif;
+    --font-arabic: 'Noto Naskh Arabic', serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--maroon-bg);
+    color: var(--maroon-primary);
+    overflow-x: hidden;
+    position: relative;
+}
+
+    /* Maroon themed background pattern */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(circle at 10% 20%, rgba(128, 0, 0, 0.03) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(128, 0, 0, 0.03) 0%, transparent 20%), radial-gradient(circle at 50% 50%, rgba(128, 0, 0, 0.03) 0%, transparent 30%);
+        z-index: -1;
+    }
+
+/* --- 2. ENVELOPE OPENING ANIMATION --- */
+#envelope-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #FFF5F5 0%, #FFE4E1 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    transition: opacity 1s ease-out 2s, visibility 1s ease-out 2s;
+}
+
+    #envelope-container.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+.envelope {
+    width: 300px;
+    height: 200px;
+    position: relative;
+    cursor: pointer;
+}
+
+.envelope-back {
+    width: 100%;
+    height: 100%;
+    background-color: var(--maroon-primary);
+    position: absolute;
+    border-radius: 5px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.envelope-flap {
+    width: 0;
+    height: 0;
+    border-left: 150px solid transparent;
+    border-right: 150px solid transparent;
+    border-top: 100px solid var(--maroon-dark);
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: top;
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+}
+
+.envelope.open .envelope-flap {
+    transform: rotateX(180deg);
+}
+
+.envelope-letter {
+    width: 280px;
+    height: 180px;
+    background-color: white;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    border-radius: 3px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transform: scale(0.8);
+    opacity: 0;
+    transition: all 1s ease-out 1s;
+    z-index: 1;
+}
+
+.envelope.open .envelope-letter {
+    transform: scale(1) translateY(-30px);
+    opacity: 1;
+}
+
+.envelope-letter .letter-text {
+    font-family: var(--font-elegant);
+    font-size: 1.5rem;
+    color: var(--maroon-primary);
+    margin-bottom: 10px;
+}
+
+.envelope-letter .letter-subtext {
+    font-size: 0.9rem;
+    color: var(--maroon-light);
+}
+
+.envelope-seal {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: var(--gold-accent);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    transition: all 1s ease-out 1s;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+}
+
+.envelope.open .envelope-seal {
+    transform: translateX(-50%) scale(0);
+    opacity: 0;
+}
+
+.envelope-seal i {
+    color: white;
+    font-size: 1.2rem;
+}
+
+/* --- 3. ROSE PETAL FALLING ANIMATION --- */
+#rose-petals-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.rose-petal {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: var(--rose-pink);
+    border-radius: 0 50% 0 50%;
+    opacity: 0.8;
+    animation: fall linear forwards;
+    transform-origin: center;
+}
+
+    .rose-petal:nth-child(odd) {
+        background-color: var(--maroon-light);
+        opacity: 0.7;
+    }
+
+    .rose-petal:nth-child(3n) {
+        width: 15px;
+        height: 15px;
+    }
+
+    .rose-petal:nth-child(4n) {
+        width: 25px;
+        height: 25px;
+    }
+
+@keyframes fall {
+    0% {
+        top: -10%;
+        transform: translateX(0) rotate(0deg);
+        opacity: 0.8;
+    }
+
+    100% {
+        top: 110%;
+        transform: translateX(100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* --- 4. DECORATIVE ELEMENTS --- */
+.corner-decoration {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    z-index: 1;
+    opacity: 0.7;
+}
+
+    .corner-decoration.top-left {
+        top: 20px;
+        left: 20px;
+        border-top: 3px solid var(--gold-accent);
+        border-left: 3px solid var(--gold-accent);
+        border-radius: 20px 0 0 0;
+    }
+
+    .corner-decoration.top-right {
+        top: 20px;
+        right: 20px;
+        border-top: 3px solid var(--gold-accent);
+        border-right: 3px solid var(--gold-accent);
+        border-radius: 0 20px 0 0;
+    }
+
+    .corner-decoration.bottom-left {
+        bottom: 20px;
+        left: 20px;
+        border-bottom: 3px solid var(--gold-accent);
+        border-left: 3px solid var(--gold-accent);
+        border-radius: 0 0 0 20px;
+    }
+
+    .corner-decoration.bottom-right {
+        bottom: 20px;
+        right: 20px;
+        border-bottom: 3px solid var(--gold-accent);
+        border-right: 3px solid var(--gold-accent);
+        border-radius: 0 0 20px 0;
+    }
+
+.floral-motif {
+    position: absolute;
+    font-size: 2rem;
+    color: var(--gold-accent);
+    opacity: 0.6;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(5deg);
+    }
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(to right, transparent, var(--gold-accent), transparent);
+    }
+
+    .divider .icon {
+        margin: 0 15px;
+        color: var(--gold-accent);
+    }
+
+/* --- 5. LANDING SECTION --- */
+#landing {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    background-image: radial-gradient(circle at 50% 50%, rgba(128, 0, 0, 0.1) 0%, transparent 70%), url('https://picsum.photos/seed/wedding-background/1200/800.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    overflow: hidden;
+}
+
+    #landing::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 245, 245, 0.85);
+        z-index: 1;
+    }
+
+    #landing .content-wrapper {
+        position: relative;
+        z-index: 2;
+        animation: fadeInUp 1.5s ease-out;
+    }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.bismillah {
+    font-family: var(--font-arabic);
+    font-size: 2.5rem;
+    color: var(--maroon-primary);
+    margin-bottom: 1.5rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.couple-names {
+    font-family: var(--font-elegant);
+    font-size: 4.5rem;
+    color: var(--maroon-primary);
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: inline-block;
+    line-height: 1.2;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+    .couple-names::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(to right, transparent, var(--gold-accent), transparent);
+    }
+
+.intro-text {
+    font-size: 1.1rem;
+    max-width: 500px;
+    line-height: 1.6;
+    margin: 0 auto;
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    40% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+
+    60% {
+        transform: translateX(-50%) translateY(-5px);
+    }
+}
+
+.scroll-indicator span {
+    display: block;
+    width: 20px;
+    height: 30px;
+    border: 2px solid var(--maroon-primary);
+    border-radius: 10px;
+    position: relative;
+}
+
+    .scroll-indicator span::before {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        width: 4px;
+        height: 6px;
+        margin-left: -2px;
+        background-color: var(--maroon-primary);
+        border-radius: 2px;
+        animation: scroll 2s infinite;
+    }
+
+@keyframes scroll {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+}
+
+/* --- 6. COUNTDOWN TIMER --- */
+.countdown-container {
+    text-align: center;
+    margin: 40px 0;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.countdown-title {
+    font-family: var(--font-elegant);
+    font-size: 2rem;
+    color: var(--maroon-primary);
+    margin-bottom: 20px;
+}
+
+.countdown {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.countdown-item {
+    background-color: var(--maroon-primary);
+    color: white;
+    border-radius: 8px;
+    padding: 15px;
+    min-width: 80px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+    .countdown-item:hover {
+        transform: translateY(-5px);
+    }
+
+.countdown-value {
+    font-size: 2rem;
+    font-weight: bold;
+    display: block;
+}
+
+.countdown-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+/* --- 7. EVENT DETAILS SECTION --- */
+#event-details {
+    padding: 80px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+    #event-details::before {
+        content: '❦';
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2rem;
+        color: var(--gold-accent);
+    }
+
+.event-card {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(128, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 1.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.event-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(to right, var(--maroon-primary), var(--gold-accent), var(--maroon-primary));
+}
+
+.event-card h3 {
+    font-family: var(--font-elegant);
+    font-size: 2.5rem;
+    color: var(--maroon-primary);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    display: inline-block;
+    position: relative;
+}
+
+    .event-card h3::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(to right, transparent, var(--gold-accent), transparent);
+    }
+
+.event-card ul {
+    list-style: none;
+    text-align: left;
+    font-size: 1rem;
+    line-height: 2;
+    margin-bottom: 30px;
+}
+
+    .event-card ul li {
+        margin-bottom: 15px;
+        position: relative;
+        padding-left: 30px;
+    }
+
+        .event-card ul li i {
+            position: absolute;
+            left: 0;
+            top: 5px;
+            color: var(--gold-accent);
+        }
+
+    .event-card ul strong {
+        color: var(--maroon-primary);
+        font-weight: 600;
+    }
+
+.map-link {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: var(--maroon-primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .map-link::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .map-link:hover::before {
+        left: 100%;
+    }
+
+    .map-link:hover {
+        background-color: var(--maroon-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(128, 0, 0, 0.3);
+    }
+
+/* --- 8. CLOSING SECTION --- */
+#closing {
+    padding: 60px 20px;
+    text-align: center;
+    position: relative;
+    background-image: radial-gradient(circle at 20% 20%, rgba(128, 0, 0, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(128, 0, 0, 0.1) 0%, transparent 50%);
+}
+
+    #closing::before {
+        content: '❦';
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2rem;
+        color: var(--gold-accent);
+    }
+
+    #closing::after {
+        content: '❦';
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2rem;
+        color: var(--gold-accent);
+    }
+
+.closing-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 auto 30px auto;
+    position: relative;
+}
+
+.signature {
+    font-family: var(--font-elegant);
+    font-size: 1.5rem;
+    line-height: 1.6;
+    margin-top: 30px;
+}
+
+/* --- 9. RESPONSIVE DESIGN --- */
+@media (max-width: 768px) {
+    .couple-names {
+        font-size: 3.5rem;
+    }
+
+    .bismillah {
+        font-size: 2rem;
+    }
+
+    .event-card {
+        padding: 30px 20px;
+    }
+
+        .event-card h3 {
+            font-size: 2rem;
+        }
+
+    .countdown-item {
+        min-width: 70px;
+        padding: 10px;
+    }
+
+    .countdown-value {
+        font-size: 1.5rem;
+    }
+
+    .corner-decoration {
+        width: 100px;
+        height: 100px;
+    }
+
+    .envelope {
+        width: 250px;
+        height: 170px;
+    }
+
+    .envelope-flap {
+        border-left-width: 125px;
+        border-right-width: 125px;
+        border-top-width: 85px;
+    }
+
+    .envelope-letter {
+        width: 230px;
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .couple-names {
+        font-size: 2.8rem;
+    }
+
+    .bismillah {
+        font-size: 1.8rem;
+    }
+
+    .event-card h3 {
+        font-size: 1.8rem;
+    }
+
+    .countdown-item {
+        min-width: 60px;
+        padding: 8px;
+    }
+
+    .countdown-value {
+        font-size: 1.2rem;
+    }
+}
