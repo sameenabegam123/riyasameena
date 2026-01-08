@@ -1,2 +1,2 @@
 # riyasameena
-weeding
+wedding
